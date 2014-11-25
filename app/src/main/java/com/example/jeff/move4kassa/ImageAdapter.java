@@ -119,12 +119,13 @@ public class ImageAdapter extends BaseAdapter {
 
         Rect bounds = new Rect();
         paint.getTextBounds(text, 0, text.length(), bounds);
-        int x = (b.getWidth() - bounds.width())/2;
-        int y = (b.getHeight() + bounds.height())/2;
+        int x = (b2.getWidth() - bounds.width())/2;
+        int y = (b2.getHeight() + bounds.height())/2;
 
-        canvas.drawText(text, x, b.getHeight(), paint);
-        canvas.drawColor(Color.BLUE);
+
+        canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(b,0,0,null);
+        canvas.drawText(text, x, b2.getHeight() - 50, paint);
         return b2;
     }
 

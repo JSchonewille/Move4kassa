@@ -81,7 +81,7 @@ public class HomeActivity extends Activity {
         ImageAdapter a = new ImageAdapter(this,test,directory.getAbsolutePath().toString());
         gridView.setAdapter(a);
         gridView.invalidate();
-        Log.e("succes", "wooot woot");
+
     }
 
     public ArrayList<User> getPresentUsers(){
@@ -128,7 +128,6 @@ public class HomeActivity extends Activity {
             @Override
             public void run() {
                 handler.post(new Runnable() {
-                    @SuppressWarnings("unchecked")
                     public void run() {
                         try {
                             getPresentUsers();
