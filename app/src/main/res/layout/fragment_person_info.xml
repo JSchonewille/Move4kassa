@@ -14,16 +14,53 @@
         android:layout_weight="0.26"
         android:background="@drawable/nopic" />
 
-    <TextView
-        android:layout_width="308dp"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="henk"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.02"
-        android:layout_marginTop="25dp"
-        android:textSize="30dp"
-        android:textIsSelectable="false"
-        android:textColor="@android:color/white" />
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.26">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="firstname"
+                android:id="@+id/t_Firstname"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:textSize="30dp"
+                android:textIsSelectable="false"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="lastname"
+                android:id="@+id/t_Lastname"
+                android:layout_gravity="right"
+                android:layout_weight="0"
+                android:textColor="@android:color/white"
+                android:textSize="30dp"
+                android:layout_marginLeft="30dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="email"
+            android:id="@+id/t_Email"
+            android:textColor="@android:color/white"
+            android:textSize="30dp"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
 </LinearLayout>

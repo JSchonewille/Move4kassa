@@ -39,6 +39,7 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
     GridView gridView;
     ArrayList<User> list;
     Fragment Userinfo;
+    ImageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +87,9 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        ImageAdapter a = new ImageAdapter(this, test, directory.getAbsolutePath().toString());
-        gridView.setAdapter(a);
+        adapter = new ImageAdapter(this, test, directory.getAbsolutePath().toString());
+
+        gridView.setAdapter(adapter);
         gridView.invalidate();
 
     }
@@ -150,13 +152,15 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
     public void GridOnClick(AdapterView<?> parent, View v,
                             int position, long id) {
 
+        User u = list.get(position);
 
-        personInfo p = new personInfo();
+        personInfo p = new personInfo().newInstance(u.getName(),u.getLastName(),u.getEmail());
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left );
         transaction.add(R.id.infoLayout, p);
-        gridView.setNumColumns(6);
         transaction.commit();
+        gridView.setNumColumns(6);
 
     }
 
