@@ -1,22 +1,23 @@
 package com.example.jeff.move4kassa;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Base64;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.ScrollView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,16 +29,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends FragmentActivity implements personInfo.OnFragmentInteractionListener {
 
     GridView gridView;
     ArrayList<User> list;
+    Fragment Userinfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +47,15 @@ public class HomeActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
-       gridView =(GridView) findViewById(R.id.gridView);
+        gridView = (GridView) findViewById(R.id.gridView);
         Userrefesh();
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                GridOnClick(parent, v, position, id);
+            }
+        });
 
     }
 
@@ -70,32 +79,31 @@ public class HomeActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setadapter(ArrayList<User> input)
-    {
+    public void setadapter(ArrayList<User> input) {
         User[] test = new User[input.size()];
         test = input.toArray(test);
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        ImageAdapter a = new ImageAdapter(this,test,directory.getAbsolutePath().toString());
+        ImageAdapter a = new ImageAdapter(this, test, directory.getAbsolutePath().toString());
         gridView.setAdapter(a);
         gridView.invalidate();
 
     }
 
-    public ArrayList<User> getPresentUsers(){
+    public ArrayList<User> getPresentUsers() {
         ServerRequestHandler.getPresentUsers(new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {
                 try {
                     JSONObject o = jsonArray.getJSONObject(0);
-                    if(!o.has("returnvalue")) {
+                    if (!o.has("returnvalue")) {
                         list = User.fromJSON(jsonArray);
                         setadapter(list);
                     }
                 } catch (JSONException e) {
-                    Log.e("presentusererror",e.toString());
+                    Log.e("presentusererror", e.toString());
                 }
 
             }
@@ -105,8 +113,7 @@ public class HomeActivity extends Activity {
                 if (volleyError.networkResponse != null) {
                     Log.e("NETWORKERROR", volleyError.networkResponse.statusCode + " " + new String(volleyError.networkResponse.data));
                     list = null;
-                }
-                else {
+                } else {
                     if (volleyError.getMessage() == null)
                         Log.e("NETWORKERROR", "timeout");
                     else
@@ -120,10 +127,9 @@ public class HomeActivity extends Activity {
         return list;
     }
 
-    public void Userrefesh()
-    {
+    public void Userrefesh() {
         final Handler handler = new Handler();
-        Timer  timer = new Timer();
+        Timer timer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
@@ -131,15 +137,32 @@ public class HomeActivity extends Activity {
                     public void run() {
                         try {
                             getPresentUsers();
-                        }
-                        catch (Exception e) {
-                            Log.e("henk",e.toString());
+                        } catch (Exception e) {
+                            Log.e("henk", e.toString());
                         }
                     }
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 60* 1000);
+        timer.schedule(doAsynchronousTask, 0, 60 * 1000);
+    }
+
+    public void GridOnClick(AdapterView<?> parent, View v,
+                            int position, long id) {
+
+
+        personInfo p = new personInfo();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left );
+        transaction.add(R.id.infoLayout, p);
+        gridView.setNumColumns(6);
+        transaction.commit();
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
 }
