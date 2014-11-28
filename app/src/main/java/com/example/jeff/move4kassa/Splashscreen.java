@@ -15,7 +15,9 @@ import android.view.MenuItem;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.jeff.move4kassa.library.DatabaseFunctions;
 import com.example.jeff.move4kassa.library.ServerRequestHandler;
+import com.example.jeff.move4kassa.library.UserLike;
 
 
 import org.json.JSONArray;
@@ -24,17 +26,20 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 
 public class Splashscreen extends Activity {
     Bitmap[] output;
     private static int SPLASH_TIME_OUT = 3000;
+    DatabaseFunctions db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splashscreen);
-        load();
+        db = DatabaseFunctions.getInstance(getApplicationContext());
+        loadImages();
     }
 
 
@@ -57,8 +62,9 @@ public class Splashscreen extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void load()
+    private void loadImages()
     {
+
         ServerRequestHandler.getUserImages(new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {
@@ -83,19 +89,8 @@ public class Splashscreen extends Activity {
 
                 }
 
-                Intent i = new Intent(Splashscreen.this, HomeActivity.class);
-                startActivity(i);
-                // close this activity
-                finish();
+            loadLikes();
 
-                //TODO: Parse hier je images uit de array en doe er iets mee
-               /* bijvoorbeerd zo:
-                byte[] decoded = Base64.decode(jsonArray.getJSONObject( int index).
-                getString("profileImage").getBytes(), Base64.DEFAULT);
-                String path = saveImage(decoded);
-
-                laat deze methode dan bijvoorbeeld een array met paden terugsturen van elke image*/
-                //setadapter();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -111,8 +106,52 @@ public class Splashscreen extends Activity {
             }
         });
 
+
     }
 
+
+    private void loadLikes()
+    {
+        ServerRequestHandler.getAllLikes(new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+
+                Log.d("all likes", jsonArray.toString());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+                        Log.d("Parsing", "getting likes");
+                        JSONObject o = jsonArray.getJSONObject(i);
+                         int id =  o.getInt("customerID");
+                         String like = o.getString("categoryName");
+                          db.addUserLikes(id,like);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.d("Parsing","parsed all entries");
+                Intent i = new Intent(Splashscreen.this, HomeActivity.class);
+
+
+                startActivity(i);
+                // close this activity
+                finish();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                if (volleyError.networkResponse != null)
+                    Log.e("NETWORKERROR", volleyError.networkResponse.statusCode + " " + new String(volleyError.networkResponse.data));
+                else {
+                    if (volleyError.getMessage() == null)
+                        Log.e("NETWORKERROR", "timeout");
+                    else
+                        Log.e("NETWORKERROR", volleyError.getMessage());
+                }
+            }
+        });
+
+
+    }
     private void saveToInternalSorage(Bitmap bitmapImage , String filename){
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir

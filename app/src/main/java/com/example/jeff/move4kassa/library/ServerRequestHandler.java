@@ -36,6 +36,14 @@ public class ServerRequestHandler {
         RequestController.getInstance().addToRequestQueue(req);
     }
 
+    public static void getAllLikes(Response.Listener<JSONArray> l, Response.ErrorListener el) {
+        String URL = Config.GETALLLIKES;
+
+        JsonArrayRequest req = new JsonArrayRequest(URL, l, el);
+
+        RequestController.getInstance().addToRequestQueue(req);
+    }
+
     public static String encodeImage(byte[] imageByteArray) {
         return Base64.encodeToString(imageByteArray, 1);
     }
@@ -105,33 +113,6 @@ public class ServerRequestHandler {
     //IMPLEMENTED REQUESTS
     /////////////////////////////
 
-    public ArrayList<User> getPresentUsers(){
-
-        getPresentUsers(new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray jsonArray) {
-                list = User.fromJSON(jsonArray);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                if (volleyError.networkResponse != null) {
-                    Log.e("NETWORKERROR", volleyError.networkResponse.statusCode + " " + new String(volleyError.networkResponse.data));
-                    list = null;
-                }
-                else {
-                    if (volleyError.getMessage() == null)
-                        Log.e("NETWORKERROR", "timeout");
-                    else
-                        Log.e("NETWORKERROR", volleyError.getMessage());
-
-                    list = null;
-                }
-            }
-        });
-
-        return list;
-    }
 
 
 }

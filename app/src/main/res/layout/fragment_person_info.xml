@@ -6,19 +6,95 @@
     android:weightSum="1"
     android:background="#ff434343">
 
-    <ImageView
-        android:layout_width="302dp"
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="close"
+        android:id="@+id/button"
+        android:textColor="@android:color/white" />
+
+    <ImageView
+        android:layout_width="206dp"
+        android:layout_height="275dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.26"
-        android:background="@drawable/nopic" />
+        android:minHeight="300dp" />
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Naam:"
+                    android:id="@+id/t_Naamlabel"
+                    android:textSize="20dp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginRight="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="firstname"
+                    android:id="@+id/t_Firstname"
+                    android:textSize="20dp"
+                    android:textIsSelectable="false"
+                    android:textColor="@android:color/white"
+                    android:layout_marginRight="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="lastname"
+                    android:id="@+id/t_Lastname"
+                    android:layout_weight="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="20dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="E-mail:"
+                    android:id="@+id/t_Maillabel"
+                    android:textSize="20dp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginRight="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="email"
+                    android:id="@+id/t_Email"
+                    android:textColor="@android:color/white"
+                    android:textSize="20dp" />
+            </TableRow>
+
+        </TableLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -27,40 +103,16 @@
             android:gravity="center_vertical|center_horizontal"
             android:layout_weight="0.26">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="firstname"
-                android:id="@+id/t_Firstname"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="25dp"
-                android:textSize="30dp"
-                android:textIsSelectable="false"
-                android:textColor="@android:color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="lastname"
-                android:id="@+id/t_Lastname"
-                android:layout_gravity="right"
-                android:layout_weight="0"
-                android:textColor="@android:color/white"
-                android:textSize="30dp"
-                android:layout_marginLeft="30dp" />
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="email"
-            android:id="@+id/t_Email"
-            android:textColor="@android:color/white"
-            android:textSize="30dp"
-            android:layout_gravity="center" />
     </LinearLayout>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="600dp"
+        android:id="@+id/l_likes"
+        android:layout_gravity="top|center"
+        android:headerDividersEnabled="true"
+        android:layout_marginTop="25dp" />
 
 </LinearLayout>

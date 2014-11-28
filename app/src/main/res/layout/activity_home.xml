@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     tools:context="com.example.jeff.move4kassa.HomeActivity"
-    android:background="@android:color/white"
+    android:background="#ff585858"
     android:orientation="horizontal"
     android:weightSum="1">
 
@@ -16,7 +16,7 @@
         android:numColumns="8"
         android:columnWidth="155dp"
         android:stretchMode="none"
-        android:background="@android:drawable/screen_background_dark_transparent" />
+        android:background="#ff585858" />
 
     <FrameLayout
         android:layout_width="340dp"

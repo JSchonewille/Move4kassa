@@ -2,7 +2,6 @@ package com.example.jeff.move4kassa;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -16,13 +15,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.jeff.move4kassa.library.DatabaseFunctions;
 import com.example.jeff.move4kassa.library.ServerRequestHandler;
 import com.example.jeff.move4kassa.library.User;
+import com.example.jeff.move4kassa.library.UserLike;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,12 +33,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class HomeActivity extends FragmentActivity implements personInfo.OnFragmentInteractionListener {
+public class HomeActivity extends FragmentActivity implements personInfo.OnFragmentInteractionListener,personInfo.Onclose {
 
     GridView gridView;
     ArrayList<User> list;
     Fragment Userinfo;
     ImageAdapter adapter;
+    String filepath = "";
+    ArrayList<UserLike> userlikes = new ArrayList<UserLike>();
+    DatabaseFunctions dbf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,10 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
         gridView = (GridView) findViewById(R.id.gridView);
+
+        dbf =  DatabaseFunctions.getInstance(getApplicationContext());
+
+        userlikes = dbf.getUserLikes();
         Userrefesh();
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -87,7 +93,8 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        adapter = new ImageAdapter(this, test, directory.getAbsolutePath().toString());
+        filepath = directory.getAbsolutePath().toString();
+        adapter = new ImageAdapter(this, test, filepath);
 
         gridView.setAdapter(adapter);
         gridView.invalidate();
@@ -154,19 +161,42 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
 
         User u = list.get(position);
 
-        personInfo p = new personInfo().newInstance(u.getName(),u.getLastName(),u.getEmail());
+        ArrayList<String> likes = new ArrayList<String>();
+        String img = "";
+        if(filepath.length() > 8 && u.getFilePath().length() > 8) {
+            String f = filepath;
+            String f2 = u.getFilePath().substring(7);
+            img = f + "/" + f2;
+        }
+        for (UserLike ul : userlikes)
+        {
+            if(ul.getUserID() == u.getUserID())
+            {
+                likes = ul.getLikes();
+                break;
+            }
+        }
+
+        personInfo p = new personInfo().newInstance(u.getName(),u.getLastName(),u.getEmail(),likes,img);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left );
+        if(gridView.getNumColumns() != 6) {
+            transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left);
+        }
         transaction.add(R.id.infoLayout, p);
         transaction.commit();
+
         gridView.setNumColumns(6);
 
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction() {
 
     }
 
+    @Override
+    public void onClose() {
+        gridView.setNumColumns(8);
+    }
 }

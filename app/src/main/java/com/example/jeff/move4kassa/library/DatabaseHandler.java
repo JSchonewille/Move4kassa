@@ -21,7 +21,7 @@ import java.util.List;
  *//*
 
 public class DatabaseHandler {
-    private static DatabaseHandler _instance = null;
+
     private static DatabaseFunctions db;
 
     private boolean checkinstatus;
@@ -30,17 +30,7 @@ public class DatabaseHandler {
 
     }
 
-    //create instance
-    private synchronized static void createInstance (final Context context) {
-        if (_instance == null) _instance = new DatabaseHandler();
-        db  = new DatabaseFunctions(context);
-    }
 
-    //get instance
-    public static DatabaseHandler getInstance (final Context context) {
-        if (_instance == null) createInstance (context);
-        return _instance;
-    }
 
     //CATEGORIES FUNCTIONS
     public void updateCategories(){
