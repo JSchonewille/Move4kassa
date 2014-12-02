@@ -33,15 +33,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class HomeActivity extends FragmentActivity implements personInfo.OnFragmentInteractionListener,personInfo.Onclose {
+public class HomeActivity extends FragmentActivity implements personInfo.OnFragmentInteractionListener {
 
     GridView gridView;
     ArrayList<User> list;
-    Fragment Userinfo;
+    Fragment userInfo;
     ImageAdapter adapter;
-    String filepath = "";
-    ArrayList<UserLike> userlikes = new ArrayList<UserLike>();
+    String filePath = "";
+    ArrayList<UserLike> userLikes = new ArrayList<UserLike>();
     DatabaseFunctions dbf;
+    final static String TAG_FRAGMENT = "INFOFRAGMENT";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +54,9 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
         setContentView(R.layout.activity_home);
         gridView = (GridView) findViewById(R.id.gridView);
 
-        dbf =  DatabaseFunctions.getInstance(getApplicationContext());
+        dbf = DatabaseFunctions.getInstance(getApplicationContext());
 
-        userlikes = dbf.getUserLikes();
+        userLikes = dbf.getUserLikes();
         Userrefesh();
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -93,8 +95,8 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        filepath = directory.getAbsolutePath().toString();
-        adapter = new ImageAdapter(this, test, filepath);
+        filePath = directory.getAbsolutePath().toString();
+        adapter = new ImageAdapter(this, test, filePath);
 
         gridView.setAdapter(adapter);
         gridView.invalidate();
@@ -158,45 +160,43 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
 
     public void GridOnClick(AdapterView<?> parent, View v,
                             int position, long id) {
-
         User u = list.get(position);
 
         ArrayList<String> likes = new ArrayList<String>();
         String img = "";
-        if(filepath.length() > 8 && u.getFilePath().length() > 8) {
-            String f = filepath;
+        if (filePath.length() > 8 && u.getFilePath().length() > 8) {
+            String f = filePath;
             String f2 = u.getFilePath().substring(7);
             img = f + "/" + f2;
         }
-        for (UserLike ul : userlikes)
-        {
-            if(ul.getUserID() == u.getUserID())
-            {
+        for (UserLike ul : userLikes) {
+            if (ul.getUserID() == u.getUserID()) {
                 likes = ul.getLikes();
                 break;
             }
         }
 
-        personInfo p = new personInfo().newInstance(u.getName(),u.getLastName(),u.getEmail(),likes,img);
+        personInfo p = new personInfo().newInstance(u.getName(), u.getLastName(), u.getEmail(), likes, img);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(gridView.getNumColumns() != 6) {
+        if (gridView.getNumColumns() != 6) {
             transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left);
         }
-        transaction.add(R.id.infoLayout, p);
+        transaction.replace(R.id.infoLayout, p,TAG_FRAGMENT).addToBackStack(TAG_FRAGMENT);
         transaction.commit();
-
-        gridView.setNumColumns(6);
-
+        gridView.setNumColumns(5);
     }
 
     @Override
     public void onFragmentInteraction() {
+        gridView.setNumColumns(7);
 
     }
-
     @Override
-    public void onClose() {
-        gridView.setNumColumns(8);
+    public void onBackPressed() {
+        //super.onBackPressed();
+        final personInfo fragment = (personInfo) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+        fragment.close();
     }
+
 }

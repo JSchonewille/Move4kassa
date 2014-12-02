@@ -58,7 +58,7 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(400, 300));
+            imageView.setLayoutParams(new GridView.LayoutParams(350, 350));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
         } else {
@@ -66,11 +66,9 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         try {
-
-
             File f = new File(savedPath, input[position].getFilePath().substring(7));
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            b = Bitmap.createScaledBitmap(b, 300, 400, true);
+            b = Bitmap.createScaledBitmap(b, 350, 350, true);
 
 
             Bitmap img = addtext(b, input[position].getName());
@@ -78,7 +76,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView.setLayoutParams(new GridView.LayoutParams(img.getWidth(), img.getHeight()));
         } catch (Exception e) {
             Bitmap noimg = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.nopic);
-            noimg = Bitmap.createScaledBitmap(noimg, 300, 400, true);
+            noimg = Bitmap.createScaledBitmap(noimg, 350, 350, true);
 
             Bitmap img = addtext(noimg, input[position].getName());
             imageView.setImageBitmap(addtext(noimg, input[position].getName()));
@@ -106,6 +104,14 @@ public class ImageAdapter extends BaseAdapter {
         int x = (b2.getWidth() - bounds.width()) / 2;
         int y = (b2.getHeight() + bounds.height()) / 2;
 
+
+        if(text.length() > 13)
+        {
+
+           text = text.substring(0,15);
+           text += "...";
+           x +=60;
+        }
 
         //canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(b, 0, 0, null);

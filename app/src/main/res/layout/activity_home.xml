@@ -13,8 +13,8 @@
         android:id="@+id/gridView"
         android:visibility="visible"
         android:horizontalSpacing="1dp"
-        android:numColumns="8"
-        android:columnWidth="155dp"
+        android:numColumns="7"
+        android:columnWidth="180dp"
         android:stretchMode="none"
         android:background="#ff585858" />
 

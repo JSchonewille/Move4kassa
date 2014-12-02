@@ -45,12 +45,13 @@ public class personInfo extends Fragment {
 
     private ArrayList<String> likes;
     private String name;
-    private String lastname;
+    private String lastName;
     private String email;
-    private String imgpath;
+    private String imgPath;
     static personInfo fragment;
 
     private OnFragmentInteractionListener mListener;
+
 
 
     public static personInfo newInstance(String name, String lastname, String email, ArrayList<String> list, String path) {
@@ -74,10 +75,11 @@ public class personInfo extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             name = getArguments().getString(ARG_PARAM1);
-            lastname = getArguments().getString(ARG_PARAM2);
+            lastName = getArguments().getString(ARG_PARAM2);
             email = getArguments().getString(ARG_PARAM3);
             likes = getArguments().getStringArrayList(ARG_PARAM4);
-            imgpath = getArguments().getString(ARG_PARAM5);
+            imgPath = getArguments().getString(ARG_PARAM5);
+
 
         }
     }
@@ -88,61 +90,55 @@ public class personInfo extends Fragment {
         // Inflate the layout for this fragment
         View myInflatedView = inflater.inflate(R.layout.fragment_person_info, container, false);
         ImageView v_pic = (ImageView) myInflatedView.findViewById(R.id.imageView);
-        TextView t_name = (TextView) myInflatedView.findViewById(R.id.t_Firstname);
-        TextView t_lastname = (TextView) myInflatedView.findViewById(R.id.t_Lastname);
+        TextView t_name = (TextView) myInflatedView.findViewById(R.id.t_name);
         TextView t_email = (TextView) myInflatedView.findViewById(R.id.t_Email);
+        TextView t_likes = (TextView) myInflatedView.findViewById(R.id.t_likes);
         ListView l_likes = (ListView) myInflatedView.findViewById(R.id.l_likes);
         Button b_close = (Button) myInflatedView.findViewById(R.id.button);
 
-        File f = new File(imgpath);
+        File f = new File(imgPath);
         Bitmap b;
         try {
             b = BitmapFactory.decodeStream(new FileInputStream(f));
-            b = Bitmap.createScaledBitmap(b, 600, 800, true);
+            b = Bitmap.createScaledBitmap(b, 800, 800, true);
             v_pic.setImageBitmap(b);
 
         } catch (FileNotFoundException e) {
             b = BitmapFactory.decodeResource(getActivity().getResources(),
                     R.drawable.nopic);
-            b = Bitmap.createScaledBitmap(b, 600, 800, true);
+            b = Bitmap.createScaledBitmap(b, 800, 800, true);
             v_pic.setImageBitmap(b);
         }
 
         b_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.support.v4.app.FragmentTransaction t = getActivity().getSupportFragmentManager().beginTransaction();
-                t.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
-                t.remove(fragment);
-                t.commit();
+            close();
             }
         });
 
-
-        t_name.setText(name);
-        t_lastname.setText(lastname);
+        t_name.setText(name + " " +lastName);
         t_email.setText(email);
         l_likes.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, likes));
+        if(l_likes.getCount() <1 )
+        {
+            t_likes.setVisibility(View.INVISIBLE);
+        }
         v_pic.setScaleType(ImageView.ScaleType.FIT_XY);
         return myInflatedView;
     }
 
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction();
-        }
-    }
+    public OnFragmentInteractionListener mCallBack;
 
-
-    public Onclose mCallBack;
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mCallBack = (Onclose) activity;
+        mCallBack = (OnFragmentInteractionListener) activity;
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
+
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -152,10 +148,10 @@ public class personInfo extends Fragment {
 
     @Override
     public void onDetach() {
-        mCallBack.onClose();
         super.onDetach();
         mListener = null;
     }
+
 
 
     /**
@@ -169,13 +165,19 @@ public class personInfo extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction();
 
     }
 
-    public interface Onclose {
-        public void onClose();
+
+
+    public void close()
+    {
+        android.support.v4.app.FragmentTransaction t = getActivity().getSupportFragmentManager().beginTransaction();
+        t.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
+        t.remove(fragment);
+        mCallBack.onFragmentInteraction();
+        t.commit();
     }
 
 }
