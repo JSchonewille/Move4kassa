@@ -5,8 +5,8 @@ package com.example.jeff.move4kassa.library;
  */
 public class Config {
 
-    public static String GETPRESENTUSERS = "http://ibeacontest.herobo.com/getpresentusers.php";
-    public static String GETUSERIMAGES = "http://ibeacontest.herobo.com/getimages.php";
-    public static String GETALLLIKES = "http://ibeacontest.herobo.com/getalllikes.php";
+    public static String GETPRESENTUSERS = "http://playground.m4mapp.com/beacons/getpresentusers.php";
+    public static String GETUSERIMAGES = "http://playground.m4mapp.com/beacons/getimages.php";
+    public static String GETALLLIKES = "http://playground.m4mapp.com/beacons/getalllikes.php";
 
 }

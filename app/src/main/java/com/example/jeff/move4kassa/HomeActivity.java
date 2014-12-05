@@ -110,6 +110,7 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                 try {
                     JSONObject o = jsonArray.getJSONObject(0);
                     if (!o.has("returnvalue")) {
+                        Log.e("henk",o.toString());
                         list = User.fromJSON(jsonArray);
                         setadapter(list);
                     }
@@ -155,7 +156,7 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 60 * 1000);
+        timer.schedule(doAsynchronousTask, 0, 30 * 1000);
     }
 
     public void GridOnClick(AdapterView<?> parent, View v,
