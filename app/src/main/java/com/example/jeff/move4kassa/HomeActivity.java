@@ -111,9 +111,17 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                     JSONObject o = jsonArray.getJSONObject(0);
                     if (!o.has("returnvalue")) {
                         Log.e("henk",o.toString());
-                        list.clear();
-                        list = User.fromJSON(jsonArray);
-                        setadapter(list);
+                        if(list !=null) {
+                            list.clear();
+                        }
+                            list = User.fromJSON(jsonArray);
+                            setadapter(list);
+                    }
+                    else {
+                        if(list !=null) {
+                            list.clear();
+                            gridView.setAdapter(null);
+                        }
                     }
                 } catch (JSONException e) {
                     Log.e("presentusererror", e.toString());
