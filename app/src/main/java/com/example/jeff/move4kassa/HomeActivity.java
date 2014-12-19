@@ -97,7 +97,7 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         filePath = directory.getAbsolutePath().toString();
         adapter = new ImageAdapter(this, test, filePath);
-
+        gridView.setAdapter(null);
         gridView.setAdapter(adapter);
         gridView.invalidate();
 
@@ -111,6 +111,7 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                     JSONObject o = jsonArray.getJSONObject(0);
                     if (!o.has("returnvalue")) {
                         Log.e("henk",o.toString());
+                        list.clear();
                         list = User.fromJSON(jsonArray);
                         setadapter(list);
                     }
@@ -156,7 +157,7 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 30 * 1000);
+        timer.schedule(doAsynchronousTask, 0, 2 * 1000);
     }
 
     public void GridOnClick(AdapterView<?> parent, View v,
