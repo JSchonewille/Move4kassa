@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.jeff.move4kassa.library.User;
+import com.example.jeff.move4kassa.library.UserLike;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -49,6 +52,11 @@ public class personInfo extends Fragment {
     private String email;
     private String imgPath;
     static personInfo fragment;
+    private ListView l_likes;
+    private TextView t_likes;
+    private ImageView v_pic;
+    TextView t_name ;
+    TextView t_email;
 
     private OnFragmentInteractionListener mListener;
 
@@ -89,11 +97,11 @@ public class personInfo extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View myInflatedView = inflater.inflate(R.layout.fragment_person_info, container, false);
-        ImageView v_pic = (ImageView) myInflatedView.findViewById(R.id.imageView);
-        TextView t_name = (TextView) myInflatedView.findViewById(R.id.t_name);
-        TextView t_email = (TextView) myInflatedView.findViewById(R.id.t_Email);
-        TextView t_likes = (TextView) myInflatedView.findViewById(R.id.t_likes);
-        ListView l_likes = (ListView) myInflatedView.findViewById(R.id.l_likes);
+        v_pic = (ImageView) myInflatedView.findViewById(R.id.imageView);
+        t_name = (TextView) myInflatedView.findViewById(R.id.t_name);
+        t_email = (TextView) myInflatedView.findViewById(R.id.t_Email);
+        t_likes = (TextView) myInflatedView.findViewById(R.id.t_likes);
+        l_likes = (ListView) myInflatedView.findViewById(R.id.l_likes);
         Button b_close = (Button) myInflatedView.findViewById(R.id.button);
 
         File f = new File(imgPath);
@@ -167,6 +175,34 @@ public class personInfo extends Fragment {
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction();
 
+    }
+
+public void refreshInfo(User u)
+{
+    t_name.setText(u.getName() + " " +u.getLastName());
+    t_email.setText(u.getEmail());
+}
+    public void refreshlikes(ArrayList<String> likes2)
+    {
+        l_likes.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, likes2));
+        if(l_likes.getCount() <1 )
+        {
+            t_likes.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void refreshImage(String path)
+    {
+        File f = new File(path);
+        Bitmap b;
+        try {
+            b = BitmapFactory.decodeStream(new FileInputStream(f));
+            b = Bitmap.createScaledBitmap(b, 800, 800, true);
+            v_pic.setImageBitmap(b);
+
+        } catch (FileNotFoundException e) {
+            Log.e("error" , "cant refresh user");
+        }
     }
 
 

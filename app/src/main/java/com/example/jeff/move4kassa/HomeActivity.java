@@ -35,15 +35,17 @@ import java.util.TimerTask;
 
 public class HomeActivity extends FragmentActivity implements personInfo.OnFragmentInteractionListener {
 
+    final static String TAG_FRAGMENT = "INFOFRAGMENT";
     GridView gridView;
     ArrayList<User> list;
     Fragment userInfo;
     ImageAdapter adapter;
     String filePath = "";
     ArrayList<UserLike> userLikes = new ArrayList<UserLike>();
+    User selectedUser;
     DatabaseFunctions dbf;
-    final static String TAG_FRAGMENT = "INFOFRAGMENT";
-
+    Boolean syncrunning = false;
+    personInfo personInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,15 +112,14 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                 try {
                     JSONObject o = jsonArray.getJSONObject(0);
                     if (!o.has("returnvalue")) {
-                        Log.e("henk",o.toString());
-                        if(list !=null) {
+                        Log.e("henk", o.toString());
+                        if (list != null) {
                             list.clear();
                         }
-                            list = User.fromJSON(jsonArray);
-                            setadapter(list);
-                    }
-                    else {
-                        if(list !=null) {
+                        list = User.fromJSON(jsonArray);
+                        setadapter(list);
+                    } else {
+                        if (list != null) {
                             list.clear();
                             gridView.setAdapter(null);
                         }
@@ -158,6 +159,10 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
                     public void run() {
                         try {
                             getPresentUsers();
+                            if(!syncrunning)
+                            {
+                                syncInfo();
+                            }
                         } catch (Exception e) {
                             Log.e("henk", e.toString());
                         }
@@ -170,7 +175,9 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
 
     public void GridOnClick(AdapterView<?> parent, View v,
                             int position, long id) {
+
         User u = list.get(position);
+        selectedUser = u;
 
         ArrayList<String> likes = new ArrayList<String>();
         String img = "";
@@ -187,12 +194,12 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
         }
 
         personInfo p = new personInfo().newInstance(u.getName(), u.getLastName(), u.getEmail(), likes, img);
-
+        personInfo = p;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (gridView.getNumColumns() != 6) {
             transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left);
         }
-        transaction.replace(R.id.infoLayout, p,TAG_FRAGMENT).addToBackStack(TAG_FRAGMENT);
+        transaction.replace(R.id.infoLayout, p, TAG_FRAGMENT).addToBackStack(TAG_FRAGMENT);
         transaction.commit();
         gridView.setNumColumns(5);
     }
@@ -202,11 +209,96 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
         gridView.setNumColumns(7);
 
     }
+
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
         final personInfo fragment = (personInfo) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
         fragment.close();
+    }
+
+
+    public void syncInfo() {
+        syncrunning = true;
+        final ArrayList<UserLike> newLikes = new ArrayList<UserLike>();
+        ServerRequestHandler.getAllLikes(new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+                        JSONObject o = jsonArray.getJSONObject(i);
+                        int id = o.getInt("customerID");
+                        String like = o.getString("categoryName");
+                        Boolean ispresent = false;
+
+                        for (UserLike uLike : newLikes) {
+                            if (uLike.getUserID() == id) {
+                                ispresent = true;
+                                uLike.addLikes(like);
+                                break;
+                            }
+                        }
+                        if (!ispresent) {
+                            UserLike uly = new UserLike(id);
+                            uly.addLikes(like);
+                            newLikes.add(uly);
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                userLikes = newLikes;
+                if(selectedUser != null)
+                {
+                    for (UserLike u2 : newLikes) {
+                        if (u2.getUserID() == selectedUser.getUserID())
+                        {
+                            if(personInfo != null) {
+                                personInfo.refreshlikes(u2.getLikes());
+                                break;
+                            }
+                        }
+                    }
+
+                    for (User u3 : list)
+                    {
+                        if(u3.getUserID() == selectedUser.getUserID())
+                        {
+                            if(personInfo != null)
+                            {
+                                if (filePath.length() > 8 && u3.getFilePath().length() > 8) {
+                                    String f = filePath;
+                                    String f2 = u3.getFilePath().substring(7);
+                                    String img = f + "/" + f2;
+                                    personInfo.refreshImage(img);
+                                }
+                               personInfo.refreshInfo(u3);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+
+                syncrunning = false;
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                if (volleyError.networkResponse != null)
+                    Log.e("NETWORKERROR", volleyError.networkResponse.statusCode + " " + new String(volleyError.networkResponse.data));
+                else {
+                    if (volleyError.getMessage() == null)
+                        Log.e("NETWORKERROR", "timeout");
+                    else
+                        Log.e("NETWORKERROR", volleyError.getMessage());
+                }
+            }
+        });
+
     }
 
 }

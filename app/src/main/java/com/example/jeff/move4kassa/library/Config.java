@@ -7,4 +7,5 @@ public class Config {
     public static String GETPRESENTUSERS = "http://playground.m4mapp.com/beacons/getpresentusers.php";
     public static String GETUSERIMAGES = "http://playground.m4mapp.com/beacons/getimages.php";
     public static String GETALLLIKES = "http://playground.m4mapp.com/beacons/getalllikes.php";
+    public static String SYNCUSERIMAGE = "http://playground.m4mapp.com/beacons/getuserimage.php";
 }

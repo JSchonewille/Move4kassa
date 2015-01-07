@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.example.jeff.move4kassa.library.ImageSync;
 import com.example.jeff.move4kassa.library.User;
 
 import java.io.File;
@@ -75,6 +76,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView.setImageBitmap(img);
             imageView.setLayoutParams(new GridView.LayoutParams(img.getWidth(), img.getHeight()));
         } catch (Exception e) {
+            ImageSync s = new  ImageSync(input[position].getUserID(),mContext,input[position].getFilePath());
             Bitmap noimg = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.nopic);
             noimg = Bitmap.createScaledBitmap(noimg, 350, 350, true);
 
