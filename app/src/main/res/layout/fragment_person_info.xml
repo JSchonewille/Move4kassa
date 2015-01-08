@@ -17,18 +17,21 @@
             android:layout_height="50dp"
             android:id="@+id/button"
             android:textColor="@android:color/white"
-            android:background="@drawable/close" />
+            android:background="@drawable/close"
+            android:layout_gravity="left"
+            android:layout_marginLeft="8dp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Personal info"
+            android:text="Persoonlijke informatie"
             android:id="@+id/textView"
             android:textColor="@android:color/white"
             android:layout_gravity="center"
-            android:layout_marginLeft="65dp"
-            android:textStyle="bold|italic" />
+            android:textStyle="bold|italic"
+            android:gravity="center_horizontal"
+            android:layout_marginRight="58dp" />
 
     </LinearLayout>
 
@@ -48,7 +51,10 @@
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -110,15 +116,6 @@
 
         </TableLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
-            android:layout_weight="0.26">
-
-        </LinearLayout>
-
     </LinearLayout>
 
     <TextView
@@ -131,7 +128,7 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textStyle="italic"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="8dp"
         android:background="#ff373737" />
 
     <ListView

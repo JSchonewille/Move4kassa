@@ -214,7 +214,10 @@ public class HomeActivity extends FragmentActivity implements personInfo.OnFragm
     public void onBackPressed() {
         //super.onBackPressed();
         final personInfo fragment = (personInfo) getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
-        fragment.close();
+        if(fragment != null) {
+            fragment.close();
+        }
+
     }
 
 
